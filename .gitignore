@@ -28,3 +28,5 @@ __pycache__/
 src/main/webapp/WEB-INF/web.xml
 
 *.rar
+*.log
+*.json
