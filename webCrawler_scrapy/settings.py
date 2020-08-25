@@ -1,13 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for webCrawler_scrapy project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     http://doc.scrapy.org/en/latest/topics/settings.html
-#     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
 # TODO 爬虫名配置
 BOT_NAME = 'demo_spider'  # 与自己实现的爬虫类中的name属性一致
@@ -15,9 +7,35 @@ SPIDER_MODULES = ['webCrawler_scrapy.spiders']
 NEWSPIDER_MODULE = 'webCrawler_scrapy.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36'
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36"
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
+
+# TODO 配置下载器（自定义时装配）
+DOWNLOADER_MIDDLEWARES = {
+    # 'webCrawler_scrapy.middlewares.SeleniumMiddleware': 543,  # selenium解决动态页面
+    'webCrawler_scrapy.middlewares.RequestPlusMiddleware': 543,  # request解决ajax post
+}
+
+# TODO 配置管道信息(自定义时装配)
+ITEM_PIPELINES = {
+    'webCrawler_scrapy.pipelines.WebcrawlerScrapyPipeline': 300,  # 保存到mysql数据库
+    'webCrawler_scrapy.pipelines.JsonWithEncodingPipeline': 300,  # 保存到文件中
+}
+
+# TODO 配置Webdriver-PhantomJS与其他参数
+PHANTOMJS_SERVICE_ARGS = []
+SELENIUM_TIMEOUT = 20
+# TODO 自行修改webdriver路径，这里采用phantomjs
+PHANTOMJS_EXECUTABLE_PATH = r'C:\Tools\phantomjs-2.1.1-windows\bin\phantomjs.exe'
+
+# Mysql数据库信息参数
+# TODO 自行修改数据库配置
+MYSQL_HOST = '101.132.131.184'
+MYSQL_DBNAME = 'threat_info'  # 数据库名字，请修改
+MYSQL_USER = 'root'  # 数据库账号，请修改
+MYSQL_PASSWD = 'Ji1234'  # 数据库密码，请修改
+MYSQL_PORT = 3306  # 数据库端口，在dbhelper中使用
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -50,11 +68,7 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-# 配置下载器（selenium）
-DOWNLOADER_MIDDLEWARES = {
-   'webCrawler_scrapy.middlewares.SeleniumMiddleware': 543,
 
-}
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -62,13 +76,6 @@ DOWNLOADER_MIDDLEWARES = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 # }
 
-# Configure item pipelines
-# See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-# 配置管道信息
-ITEM_PIPELINES = {
-    'webCrawler_scrapy.pipelines.WebcrawlerScrapyPipeline': 300,  # 保存到mysql数据库
-    'webCrawler_scrapy.pipelines.JsonWithEncodingPipeline': 300,  # 保存到文件中
-}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -91,16 +98,4 @@ ITEM_PIPELINES = {
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-# Webdriver-PhantomJS与其他参数
-PHANTOMJS_SERVICE_ARGS = []
-SELENIUM_TIMEOUT = 20
-# TODO 自行修改webdriver路径，这里采用phantomjs
-PHANTOMJS_EXECUTABLE_PATH = r'C:\Tools\phantomjs-2.1.1-windows\bin\phantomjs.exe'
 
-# Mysql数据库信息参数
-# TODO 自行修改数据库配置
-MYSQL_HOST = '101.132.131.184'
-MYSQL_DBNAME = 'threat_info'  # 数据库名字，请修改
-MYSQL_USER = 'root'  # 数据库账号，请修改
-MYSQL_PASSWD = 'Ji1234'  # 数据库密码，请修改
-MYSQL_PORT = 3306  # 数据库端口，在dbhelper中使用

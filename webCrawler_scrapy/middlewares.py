@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
-import time
-
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from scrapy.http import HtmlResponse
 
-
+# 解决动态页面获取问题
 class SeleniumMiddleware:
     def __init__(self, timeout=None, service_args=None, executable_path=None):
         if service_args is None:
@@ -22,12 +17,6 @@ class SeleniumMiddleware:
         self.browser.close()
 
     def process_request(self, request, spider):
-        """
-        用PhantomJS抓取页面
-        :param request: Request对象
-        :param spider: Spider对象
-        :return: HtmlResponse
-        """
         self.browser.get(request.url)
         html = self.browser.page_source
         return HtmlResponse(url=request.url, body=html, request=request, encoding='utf-8')
@@ -38,3 +27,16 @@ class SeleniumMiddleware:
                    service_args=crawler.settings.get('PHANTOMJS_SERVICE_ARGS'),
                    executable_path=crawler.settings.get('PHANTOMJS_EXECUTABLE_PATH')
                    )
+
+# 解决ajax请求头访问问题
+class RequestPlusMiddleware:
+
+    def __init__(self, timeout=None):
+        self.timeout = timeout
+
+    def process_request(self, request, spider):
+        response = spider.session.post(url=request.url, data=spider.formdata, headers=spider.headers)
+        response.encoding = response.apparent_encoding
+        html = response.content.decode('unicode-escape')
+
+        return HtmlResponse(url=request.url, body=html, request=request, encoding='utf-8')

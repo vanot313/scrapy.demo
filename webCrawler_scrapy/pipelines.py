@@ -36,15 +36,6 @@ class WebcrawlerScrapyPipeline(object):
 
     def __init__(self, dbpool):
         self.dbpool = dbpool
-        ''' 这里注释中采用写死在代码中的方式连接线程池，可以从settings配置文件中读取，更加灵活
-            self.dbpool=adbapi.ConnectionPool('MySQLdb',
-                                          host='127.0.0.1',
-                                          db='crawlpicturesdb',
-                                          user='root',
-                                          passwd='123456',
-                                          cursorclass=MySQLdb.cursors.DictCursor,
-                                          charset='utf8',
-                                          use_unicode=False)'''
 
     # TODO 这个方法何时被调用的？
     @classmethod
@@ -72,11 +63,23 @@ class WebcrawlerScrapyPipeline(object):
 
     # 写入数据库中
     def _conditional_insert(self, tx, item):
-        sql = "insert into testtable(name,url) values(%s,%s)"
-        params = (item["name"], item["url"])
+        attributename = ""
+        attributetype = ""
+        params = ()
+
+        for type in item.attributetypes:
+            attributetype = attributetype + "," + type
+        attributetype = attributetype[1:]
+
+        for name in item.attributenames:
+            attributename = attributename + "," + name
+            params = params + (item[name],)
+        attributename = attributename[1:]
+
+        sql = "insert into " + item.tablename + " (" + attributename + ") values(" + attributetype + ")"
         tx.execute(sql, params)
 
     # 错误处理方法
-    def _handle_error(self, failue, item, spider):
+    def _handle_error(self, failue):
         print('ERROR:database operation exception.数据库操作错误')
         print(failue)
