@@ -31,15 +31,14 @@ class DemoSpider(scrapy.spiders.Spider):
     # 逐页爬取
     def start_requests(self):
         url = 'https://nosec.org/home/ajaxindexdata'
-        requests = []
-        for i in range(1, 2):
+        for i in range(1, 111):
             self.formdata = {
                 'page': str(i),
                 'keykind': 'security',
             }
+
             request = FormRequest(url, callback=self.parse, formdata=self.formdata, headers=self.headers)
-            requests.append(request)
-        return requests
+            yield request
 
     # TODO 处理爬虫数据逻辑
     def parse(self, response):

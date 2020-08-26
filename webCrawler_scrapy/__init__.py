@@ -12,4 +12,4 @@ configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
 # 创建一个CrawlerRunner对象
 runner = CrawlerRunner()
 
-d = runner.crawl(DemoSpider)  # 返回一个Twisted中的Deferred对象
+d = runner.crawl(DemoSpider)  #

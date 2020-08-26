@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from scrapy.http import HtmlResponse
 
+
 # 解决动态页面获取问题
 class SeleniumMiddleware:
     def __init__(self, timeout=None, service_args=None, executable_path=None):
@@ -28,6 +29,7 @@ class SeleniumMiddleware:
                    executable_path=crawler.settings.get('PHANTOMJS_EXECUTABLE_PATH')
                    )
 
+
 # 解决ajax请求头访问问题
 class RequestPlusMiddleware:
 
@@ -36,6 +38,7 @@ class RequestPlusMiddleware:
 
     def process_request(self, request, spider):
         response = spider.session.post(url=request.url, data=spider.formdata, headers=spider.headers)
+
         response.encoding = response.apparent_encoding
         html = response.content.decode('unicode-escape')
 
