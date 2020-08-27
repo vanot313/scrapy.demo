@@ -31,7 +31,7 @@ class DemoSpider(scrapy.spiders.Spider):
     # 逐页爬取
     def start_requests(self):
         url = 'https://nosec.org/home/ajaxindexdata'
-        for i in range(1, 111):
+        for i in range(1, 3):
             self.formdata = {
                 'page': str(i),
                 'keykind': 'security',
